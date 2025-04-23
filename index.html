@@ -193,7 +193,7 @@
       <span class="post-meta-item-text">发表于</span>
       
 
-      <time title="创建时间：2025-04-23 10:00:00 / 修改时间：10:42:30" itemprop="dateCreated datePublished" datetime="2025-04-23T10:00:00+08:00">2025-04-23</time>
+      <time title="创建时间：2025-04-23 10:00:00 / 修改时间：10:44:18" itemprop="dateCreated datePublished" datetime="2025-04-23T10:00:00+08:00">2025-04-23</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -215,25 +215,15 @@
     
     
     <div class="post-body" itemprop="articleBody">
-          <p>官方文档： <a target="_blank" rel="noopener" href="https://www.python-httpx.org/">https://www.python-httpx.org/</a> </p>
-<blockquote>
-<p>这种文档是怎么生成的 [Material for MkDocs](<a target="_blank" rel="noopener" href="https://squidfunk.github.io/mkdocs-material/">https://squidfunk.github.io/mkdocs-material/</a></p>
-</blockquote>
-<p>以async get request为例</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">async</span> <span class="keyword">with</span> httpx.AsyncClient() <span class="keyword">as</span> client:</span><br><span class="line"> r = <span class="keyword">await</span> client.get(<span class="string">&#x27;https://www.example.com/&#x27;</span>)</span><br></pre></td></tr></table></figure>
-
-<h3 id="AsyncClient-init"><a href="#AsyncClient-init" class="headerlink" title="AsyncClient.__init__"></a>AsyncClient.__init__</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 状态流转为_state = ClientState.UNOPENED</span></span><br><span class="line"><span class="comment"># 执行 _init_transport 就是初始化一个AsyncConnectionPool </span></span><br></pre></td></tr></table></figure>
-
-<h3 id="AsyncClient-aenter"><a href="#AsyncClient-aenter" class="headerlink" title="AsyncClient.__aenter__"></a>AsyncClient.__aenter__</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 状态流转为_state = ClientState.OPENED</span></span><br><span class="line"><span class="comment"># _transport.__aenter__ 就是AsyncConnectionPool.__aenter__  </span></span><br><span class="line"><span class="comment">#    return AsyncConnectionPool</span></span><br></pre></td></tr></table></figure>
-
-<h3 id="AsyncClient-get"><a href="#AsyncClient-get" class="headerlink" title="AsyncClient.get"></a>AsyncClient.get</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 先执行build_request 然后send</span></span><br><span class="line"><span class="comment"># send做了什么</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># _state = ClientState.OPENED</span></span><br><span class="line"><span class="comment"># auth = self._build_request_auth(request, auth)</span></span><br><span class="line">response = <span class="keyword">await</span> <span class="variable language_">self</span>._send_handling_auth(</span><br><span class="line">    request,</span><br><span class="line">    auth=auth,</span><br><span class="line">    follow_redirects=follow_redirects,</span><br><span class="line">    history=[],</span><br><span class="line">)</span><br><span class="line"><span class="keyword">try</span>:</span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">not</span> stream:</span><br><span class="line">        <span class="keyword">await</span> response.aread()</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> response</span><br><span class="line"></span><br><span class="line"><span class="keyword">except</span> BaseException <span class="keyword">as</span> exc:</span><br><span class="line">    <span class="keyword">await</span> response.aclose()</span><br><span class="line">    <span class="keyword">raise</span> exc</span><br><span class="line"><span class="comment"># _send_handling_auth：async_auth_flow之后再看，就是执行 _send_single_request </span></span><br><span class="line"><span class="comment">#                     执行transport.handle_async_request </span></span><br><span class="line"><span class="comment">#                     然后执行AsyncConnectionPool.handle_async_request</span></span><br><span class="line"><span class="comment">#                     然后执行AsyncHTTP2Connection.handle_async_request</span></span><br></pre></td></tr></table></figure>
-
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">asyncclient-&gt;transport-&gt;asyncconnectionpool-&gt;connection-&gt;network_stream</span><br></pre></td></tr></table></figure>
-
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">httpx-&gt;httpcore-&gt;anyio</span><br></pre></td></tr></table></figure>
-
-
-
+          <p>httpx</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2025/04/23/httpx/">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
